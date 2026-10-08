@@ -1,6 +1,12 @@
 name: Validate Shift Blocks iOS
 on:
   workflow_dispatch:
+    inputs:
+      device:
+        description: Native device family to validate
+        type: choice
+        options: [both, iPhone, iPad]
+        default: both
 permissions:
   contents: write
 jobs:
@@ -10,7 +16,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        device: [iPhone, iPad]
+        device: ${{ fromJSON(inputs.device == 'iPad' && '["iPad"]' || inputs.device == 'iPhone' && '["iPhone"]' || '["iPhone","iPad"]') }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
       - name: Install pinned Flutter
@@ -35,7 +41,7 @@ jobs:
           open -a Simulator
           echo "IOS_DEVICE=$DEVICE" >> "$GITHUB_ENV"
       - name: Exercise core native UI and capture actual English screens
-        timeout-minutes: 18
+        timeout-minutes: 10
         run: |
           mkdir -p store-assets/ios-evidence
           python3 -c 'from pathlib import Path; p=Path("test_driver/screenshots.dart"); p.write_text(p.read_text().replace("store-assets/screenshots", "store-assets/ios-evidence"))'
