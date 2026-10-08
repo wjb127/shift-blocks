@@ -38,6 +38,11 @@ void main() {
       if (Platform.isAndroid) await binding.convertFlutterSurfaceToImage();
       await t.pumpAndSettle();
       expect(find.text('Next scheduled work'), findsOneWidget);
+      // A navigation frame ensures the native iOS screenshot surface is ready.
+      await t.tap(find.text('Drafts'));
+      await t.pumpAndSettle();
+      await t.tap(find.text('Calendar'));
+      await t.pumpAndSettle();
       await binding.takeScreenshot('01-calendar-en');
       await t.tap(find.text('Drafts'));
       await t.pumpAndSettle();
