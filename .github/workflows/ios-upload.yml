@@ -1,0 +1,34 @@
+name: Upload verified Shift Blocks archive
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  upload:
+    runs-on: macos-latest
+    timeout-minutes: 25
+    steps:
+      - name: Download exact signed build
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release download signed-1.0.0-1 --repo wjb127/shift-blocks --pattern '*.ipa' --dir "$RUNNER_TEMP/ipa"
+          IPA_PATH=$(find "$RUNNER_TEMP/ipa" -name '*.ipa' -print -quit)
+          echo 'fbf3126f8f496f6365b97b93bf37ac75f0e7dce044602a24eecaf272fab1ed56  '"$IPA_PATH" | shasum -a 256 -c -
+          echo "IPA_PATH=$IPA_PATH" >> "$GITHUB_ENV"
+      - name: Validate and upload exact archive
+        env:
+          ASC_KEY_BASE64: ${{ secrets.SHIFT_ASC_KEY_BASE64 }}
+        run: |
+          set -euo pipefail
+          test -n "$ASC_KEY_BASE64"
+          export API_PRIVATE_KEYS_DIR="$RUNNER_TEMP/asc-private-keys"
+          mkdir -p "$API_PRIVATE_KEYS_DIR"
+          KEY_PATH="$API_PRIVATE_KEYS_DIR/AuthKey_7B7MDM4N2M.p8"
+          trap 'rm -f "$KEY_PATH"' EXIT
+          printf '%s' "$ASC_KEY_BASE64" | base64 --decode > "$KEY_PATH"
+          chmod 600 "$KEY_PATH"
+          xcrun altool --validate-app -f "$IPA_PATH" -t ios --apiKey 7B7MDM4N2M --apiIssuer f8a8b51b-e563-4cc0-a0e7-91f387396c25
+          xcrun altool --upload-app -f "$IPA_PATH" -t ios --apiKey 7B7MDM4N2M --apiIssuer f8a8b51b-e563-4cc0-a0e7-91f387396c25
+
