@@ -39,7 +39,7 @@ jobs:
         run: |
           mkdir -p store-assets/ios-evidence
           python3 -c 'from pathlib import Path; p=Path("test_driver/screenshots.dart"); p.write_text(p.read_text().replace("store-assets/screenshots", "store-assets/ios-evidence"))'
-          flutter drive --verbose --driver=test_driver/screenshots.dart --target=integration_test/native_flow_test.dart -d "$IOS_DEVICE" > "$RUNNER_TEMP/native-drive.log" 2>&1 &
+          flutter drive --no-start-paused --verbose --driver=test_driver/screenshots.dart --target=integration_test/native_flow_test.dart -d "$IOS_DEVICE" > "$RUNNER_TEMP/native-drive.log" 2>&1 &
           DRIVE_PID=$!
           while kill -0 "$DRIVE_PID" 2>/dev/null; do tail -n 8 "$RUNNER_TEMP/native-drive.log"; sleep 20; done
           wait "$DRIVE_PID"
