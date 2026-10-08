@@ -31,7 +31,7 @@ android {
         // flag during build.
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-        manifestPlaceholders["admobAppId"] = "ca-app-pub-3940256099942544~3347511713"
+        manifestPlaceholders["admobAppId"] = "ca-app-pub-2803803669720807~1499464599"
     }
 
     signingConfigs { create("release") { keyAlias = signing["keyAlias"] as String; keyPassword = signing["keyPassword"] as String; storeFile = file(signing["storeFile"] as String); storePassword = signing["storePassword"] as String } }

@@ -23,7 +23,8 @@ void main() {
       r.entries[dateKey(nextDay(today, 2))] = const Entry('off', locked: true);
       await r.apply(r.rotate(today, nextDay(today, 30), today));
       await t.pumpWidget(
-        MaterialApp(
+      MaterialApp(
+        debugShowCheckedModeBanner: false,
           theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(
               seedColor: const Color(0xff137c72),

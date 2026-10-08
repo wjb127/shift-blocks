@@ -4,7 +4,7 @@
     "app_key": "shift-blocks",
     "version": "1.0.0",
     "build": "1",
-    "revision": "development-20261008"
+    "revision": "8bd0f7c869a54592a8ce0ae4fac8ca254d4a65ca"
   },
   "platforms": [
     "android",
@@ -17,14 +17,62 @@
   "stores": {
     "android": {
       "identifier": "com.wjbapps.shiftblocks",
-      "admob": {}
+      "admob": {
+        "app_id": "ca-app-pub-2803803669720807~1499464599",
+        "banner_id": "ca-app-pub-2803803669720807/7873301254",
+        "formats": [
+          "banner"
+        ]
+      }
     },
     "ios": {
       "identifier": "com.wjbapps.shiftblocks",
       "team_id": "9Q26686S8R",
-      "admob": {}
+      "admob": {
+        "app_id": "ca-app-pub-2803803669720807~2620974573",
+        "banner_id": "ca-app-pub-2803803669720807/2134634273",
+        "formats": [
+          "banner"
+        ]
+      }
     }
   },
-  "watch": {},
-  "adapters": {}
+  "watch": {
+    "qa": [
+      "lib/main.dart",
+      "lib/app.dart",
+      "lib/roster.dart",
+      "lib/strings.dart",
+      "lib/ads.dart",
+      "test/roster_test.dart",
+      "test/app_test.dart",
+      "integration_test/native_flow_test.dart",
+      "pubspec.yaml",
+      "pubspec.lock"
+    ],
+    "assets": [
+      "docs/privacy.html",
+      "docs/index.html",
+      "store-assets/listing-en.json"
+    ],
+    "android.build": [
+      "android/app/build.gradle.kts",
+      "android/app/src/main/AndroidManifest.xml"
+    ],
+    "ios.build": [
+      "ios/Runner/Info.plist",
+      "ios/Runner.xcodeproj/project.pbxproj",
+      ".github/workflows/ios-release.yml"
+    ]
+  },
+  "adapters": {},
+  "checkpoints": {
+    "privacy_url": "https://wjb127.github.io/shift-blocks/privacy.html",
+    "source_queue_id": "idea-4d14f03ad467",
+    "repository": "https://github.com/wjb127/shift-blocks",
+    "apple_bundle_id": "6K3HD3L76B",
+    "apple_app_id": "6820323956",
+    "ios_validation_run": 37712392148,
+    "google_create_confirmation_pending": true
+  }
 }
