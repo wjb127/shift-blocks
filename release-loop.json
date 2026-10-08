@@ -1,0 +1,30 @@
+{
+  "schema": 1,
+  "release": {
+    "app_key": "shift-blocks",
+    "version": "1.0.0",
+    "build": "1",
+    "revision": "development-20261008"
+  },
+  "platforms": [
+    "android",
+    "ios"
+  ],
+  "authorization": {
+    "release": true,
+    "source": "Standing user weekday authorization; idea-4d14f03ad467"
+  },
+  "stores": {
+    "android": {
+      "identifier": "com.wjbapps.shiftblocks",
+      "admob": {}
+    },
+    "ios": {
+      "identifier": "com.wjbapps.shiftblocks",
+      "team_id": "9Q26686S8R",
+      "admob": {}
+    }
+  },
+  "watch": {},
+  "adapters": {}
+}

@@ -1,0 +1,10 @@
+{
+  "name": "Shift Blocks",
+  "apple_name": "Shift Blocks: Work Calendar",
+  "subtitle": "Rotations, nights and rest",
+  "short_description": "Plan shift rotations, protect dates and preview personal random drafts.",
+  "description": "Keep your personal work schedule clear with Shift Blocks.\n\nCreate named, colored shift presets with start and end times, breaks and off days. Anchor a repeating pattern to a saved date and position, preview a date range and apply it while preserving past and protected dates. Undo the last change in the current session.\n\nOvernight shifts appear once on their start date. Monthly work totals subtract breaks and account for daylight saving in your selected work timezone. See the next scheduled workday.\n\nCreate reproducible random drafts using a seed, target counts, maximum consecutive workdays and minimum rest hours. Existing protected dates stay fixed. Only a candidate passing all configured checks is offered; conflicting conditions may produce no draft. Review every draft against your employer\u2019s official roster. This is a personal calendar, not a company staffing or legal-compliance system.\n\nSchedules stay on your device. Export and restore JSON backup files using destinations you choose. There is no automatic cloud sync. Optional advertising follows regional consent, and core functions remain available without ads.",
+  "keywords": "shift,calendar,rotation,work,night,roster,schedule,rest",
+  "privacy_url": "https://wjb127.github.io/shift-blocks/privacy.html",
+  "support_url": "https://wjb127.github.io/shift-blocks/"
+}

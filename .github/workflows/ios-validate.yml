@@ -1,0 +1,56 @@
+name: Validate Shift Blocks iOS
+on:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  native-ios:
+    runs-on: macos-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        device: [iPhone, iPad]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+      - name: Install pinned Flutter
+        run: |
+          git clone --depth 1 --branch 3.47.5 https://github.com/flutter/flutter.git "$RUNNER_TEMP/flutter"
+          echo "$RUNNER_TEMP/flutter/bin" >> "$GITHUB_PATH"
+      - run: flutter config --no-enable-swift-package-manager
+      - run: flutter pub get
+      - run: flutter analyze
+      - run: flutter test test
+      - name: Build native simulator with test advertising only
+        run: flutter build ios --simulator --debug
+      - name: Start available native simulator
+        env:
+          DEVICE_FAMILY: ${{ matrix.device }}
+        run: |
+          xcrun simctl list devices available --json > "$RUNNER_TEMP/devices.json"
+          DEVICE=$(python3 -c 'import json,os; d=json.load(open(os.environ["RUNNER_TEMP"]+"/devices.json")); rows=[(r,x) for r,xs in d["devices"].items() for x in xs if x.get("isAvailable") and x["name"].startswith(os.environ["DEVICE_FAMILY"])]; rows.sort(key=lambda row: ("iOS-18" not in row[0], "Pro Max" not in row[1]["name"] if os.environ["DEVICE_FAMILY"]=="iPhone" else "13-inch" not in row[1]["name"],row[0],row[1]["name"])); print(rows[0][1]["udid"])')
+          cat "$RUNNER_TEMP/devices.json"
+          xcrun simctl boot "$DEVICE" || true
+          xcrun simctl bootstatus "$DEVICE" -b
+          open -a Simulator
+          echo "IOS_DEVICE=$DEVICE" >> "$GITHUB_ENV"
+      - name: Exercise core native UI and capture actual English screens
+        timeout-minutes: 18
+        run: |
+          mkdir -p store-assets/ios-evidence
+          python3 -c 'from pathlib import Path; p=Path("test_driver/screenshots.dart"); p.write_text(p.read_text().replace("store-assets/screenshots", "store-assets/ios-evidence"))'
+          flutter drive --verbose --driver=test_driver/screenshots.dart --target=integration_test/native_flow_test.dart -d "$IOS_DEVICE" > "$RUNNER_TEMP/native-drive.log" 2>&1 &
+          DRIVE_PID=$!
+          while kill -0 "$DRIVE_PID" 2>/dev/null; do tail -n 8 "$RUNNER_TEMP/native-drive.log"; sleep 20; done
+          wait "$DRIVE_PID"
+      - name: Save native evidence to private draft release
+        if: always()
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view native-evidence >/dev/null 2>&1 || gh release create native-evidence --draft --title 'Native validation evidence' --notes 'Automated native UI checks and screenshots.'
+          mkdir -p store-assets/ios-evidence
+          cp "$RUNNER_TEMP/native-drive.log" "store-assets/ios-evidence/${{ matrix.device }}-drive.log" 2>/dev/null || true
+          for f in store-assets/ios-evidence/*.png; do if test -f "$f"; then mv "$f" "store-assets/ios-evidence/${{ matrix.device }}-$(basename "$f")"; fi; done
+          for f in store-assets/ios-evidence/*; do if test -f "$f"; then gh release upload native-evidence "$f" --clobber; fi; done
+
